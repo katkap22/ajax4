@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        button {
+            margin: 5px;
+        }
+        /* .card { */
+            /* width: 150px; */
+            /* margin: 10px; */
+        /* } */
+        .card-img {
+            display: block;
+            /* width: 150px; */
+            /* height: 100px; */
+        }
+        .result {
+            display: flex;
+            flex-wrap: wrap;
+            width: 350px;
+        }
+    </style>    
+    <title>Document</title>
+</head>
+<body>
+    <input class="input1" type="text" placeholder="Введите любое число">
+    <input class="input2" type="text" placeholder="Введите любое число">
+    <button type="submit">Кнопка</button>
+    <div class="result"></div>
+
+    <script>
+        const btn = document.querySelector('button');
+        const resultDiv = document.querySelector('.result');
+
+        function useFetch(url, callback){
+            debugger;
+            fetch(url)
+                .then((response) => {
+                    console.log('response', response);
+                    const result = response.json();
+                    console.log('result', result);
+                    return result;
+                })
+                .then((data) => {
+                    debugger;
+                    console.log(data);
+                    if (callback) {
+                        callback(data);
+                    }
+                })
+                .catch((error) => {
+                    const result = `Ошибка! Статус ответа: ${error}`;
+                })
+                .finally(() => {
+                    console.log('Выплняется всегда');
+                });
+        }
+
+        function displayResult(responseData) {
+            console.log(responseData);
+            const card = `
+                <div>
+                    <img src="${responseData.url}" class="card-img">
+                </div>
+            `;         
+            resultDiv.innerHTML = card;
+}
+
+        btn.addEventListener('click', () => {
+            const value1 = document.querySelector('.input1').value;
+            const value2 = document.querySelector('.input2').value;
+            console.log('value1:' + value1 + '. value2:' + value2);
+            if ((Number.isFinite(+value1) && value1 >= 100 && value1 <= 300) && (Number.isFinite(+value2) && value2 >= 100 && value2 <= 300)) {
+                useFetch(`https://picsum.photos/${value1}/${value2}`, displayResult);
+            } else {
+                resultDiv.textContent = 'одно из чисел вне диапазона от 100 до 300';
+            }
+        })
+    </script>
+</body>
+</html>
